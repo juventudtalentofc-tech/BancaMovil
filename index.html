@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BancoMóvil - Tu banca en el celular</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #2e5bff;
+            --primary-dark: #1c3cb6;
+            --secondary: #00d4aa;
+            --danger: #ff3c32;
+            --warning: #ffa726;
+            --light: #f8f9fa;
+            --dark: #2e384d;
+            --gray: #8798ad;
+            --gray-light: #e4e8ee;
+            --white: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            max-width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .app-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Balance Card */
+        .balance-section {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            border-radius: 0 0 var(--radius) var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .balance-title {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .balance-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--white);
+            padding: 12px;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .action-btn i {
+            font-size: 1.2rem;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 0 20px;
+            margin-bottom: 25px;
+        }
+
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--dark);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        /* Transactions */
+        .transactions-section {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            margin: 0 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .see-all {
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .transactions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .transaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .transaction-icon.income {
+            background-color: rgba(0, 212, 170, 0.1);
+            color: var(--secondary);
+        }
+
+        .transaction-icon.expense {
+            background-color: rgba(255, 60, 50, 0.1);
+            color: var(--danger);
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .transaction-date {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+        }
+
+        .transaction-amount.income {
+            color: var(--secondary);
+        }
+
+        .transaction-amount.expense {
+            color: var(--danger);
+        }
+
+        /* Services */
+        .services-section {
+            padding: 0 20px;
+            margin-bottom: 25px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .service-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--dark);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--white);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            background-color: var(--white);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 10px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: var(--transition);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-light);
+            color: var(--dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .quick-actions, .services-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .action-icon, .service-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .service-icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .quick-actions, .services-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+            
+            .action-icon, .service-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .service-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .balance-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                max-width: 500px;
+                margin: 0 auto;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                min-height: 100vh;
+            }
+        }
+
+        /* Animations */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header de la aplicación -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-university"></i>
+                <span>BancoMóvil</span>
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">JM</div>
+            <div>
+                <div class="user-name">Juan Martínez</div>
+                <div class="user-status"><i class="fas fa-circle" style="color: var(--secondary); font-size: 0.6rem;"></i> Activo</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de balance -->
+    <section class="balance-section">
+        <div class="balance-title">Balance disponible</div>
+        <div class="balance-amount">$ 2,450.00</div>
+        <div class="balance-actions">
+            <button class="action-btn" id="addMoneyBtn">
+                <i class="fas fa-plus-circle"></i>
+                <span>Ingresar</span>
+            </button>
+            <button class="action-btn" id="sendMoneyBtn">
+                <i class="fas fa-paper-plane"></i>
+                <span>Enviar</span>
+            </button>
+            <button class="action-btn" id="withdrawBtn">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Retirar</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Acciones rápidas -->
+    <section class="quick-actions">
+        <div class="quick-action">
+            <div class="action-icon">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <span>QR</span>
+        </div>
+        <div class="quick-action">
+            <div class="action-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <span>Recargar</span>
+        </div>
+        <div class="quick-action">
+            <div class="action-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <span>Servicios</span>
+        </div>
+        <div class="quick-action">
+            <div class="action-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <span>Promos</span>
+        </div>
+    </section>
+
+    <!-- Transacciones recientes -->
+    <section class="transactions-section">
+        <div class="section-header">
+            <h3 class="section-title">Transacciones recientes</h3>
+            <a href="#" class="see-all">Ver todas</a>
+        </div>
+        <div class="transactions-list" id="transactionsList">
+            <!-- Las transacciones se cargan con JavaScript -->
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section class="services-section">
+        <div class="section-header">
+            <h3 class="section-title">Servicios disponibles</h3>
+        </div>
+        <div class="services-grid">
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <span>Energía</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <span>Agua</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <span>Internet</span>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <span>TV</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navegación inferior -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-credit-card"></i>
+            <span>Tarjetas</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-chart-pie"></i>
+            <span>Estadísticas</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+
+    <!-- Modal para enviar dinero -->
+    <div class="modal" id="sendMoneyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Enviar dinero</h3>
+                <button class="close-modal" id="closeSendModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="recipient">Destinatario</label>
+                    <input type="text" class="form-input" id="recipient" placeholder="Nombre, teléfono o email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="amount">Monto</label>
+                    <input type="number" class="form-input" id="amount" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="message">Mensaje (opcional)</label>
+                    <input type="text" class="form-input" id="message" placeholder="Agregar un mensaje">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="cancelSend">Cancelar</button>
+                    <button class="btn btn-primary" id="confirmSend">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ingresar dinero -->
+    <div class="modal" id="addMoneyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Ingresar dinero</h3>
+                <button class="close-modal" id="closeAddModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="addAmount">Monto a ingresar</label>
+                    <input type="number" class="form-input" id="addAmount" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="paymentMethod">Método de pago</label>
+                    <select class="form-input" id="paymentMethod">
+                        <option value="card">Tarjeta de crédito/débito</option>
+                        <option value="cash">Efectivo en punto</option>
+                        <option value="transfer">Transferencia bancaria</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="cancelAdd">Cancelar</button>
+                    <button class="btn btn-primary" id="confirmAdd">Ingresar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para retirar dinero -->
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Retirar dinero</h3>
+                <button class="close-modal" id="closeWithdrawModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="withdrawAmount">Monto a retirar</label>
+                    <input type="number" class="form-input" id="withdrawAmount" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="withdrawMethod">Método de retiro</label>
+                    <select class="form-input" id="withdrawMethod">
+                        <option value="atm">Cajero automático</option>
+                        <option value="agent">Agente autorizado</option>
+                        <option value="bank">Sucursal bancaria</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="cancelWithdraw">Cancelar</button>
+                    <button class="btn btn-primary" id="confirmWithdraw">Retirar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para transacciones
+        const transactions = [
+            { id: 1, name: "Pago de servicios", date: "Hoy, 10:30 AM", amount: -45.00, type: "expense", icon: "fas fa-bolt" },
+            { id: 2, name: "Recarga de celular", date: "Ayer, 14:20", amount: -10.00, type: "expense", icon: "fas fa-mobile-alt" },
+            { id: 3, name: "Transferencia recibida", date: "Ayer, 09:15", amount: 120.00, type: "income", icon: "fas fa-money-bill-wave" },
+            { id: 4, name: "Compra en supermercado", date: "12 Mayo, 18:45", amount: -85.50, type: "expense", icon: "fas fa-shopping-cart" },
+            { id: 5, name: "Pago de internet", date: "10 Mayo, 12:00", amount: -35.00, type: "expense", icon: "fas fa-wifi" }
+        ];
+
+        // Elementos del DOM
+        const transactionsList = document.getElementById('transactionsList');
+        const sendMoneyBtn = document.getElementById('sendMoneyBtn');
+        const addMoneyBtn = document.getElementById('addMoneyBtn');
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        const sendMoneyModal = document.getElementById('sendMoneyModal');
+        const addMoneyModal = document.getElementById('addMoneyModal');
+        const withdrawModal = document.getElementById('withdrawModal');
+        const closeSendModal = document.getElementById('closeSendModal');
+        const closeAddModal = document.getElementById('closeAddModal');
+        const closeWithdrawModal = document.getElementById('closeWithdrawModal');
+        const cancelSend = document.getElementById('cancelSend');
+        const cancelAdd = document.getElementById('cancelAdd');
+        const cancelWithdraw = document.getElementById('cancelWithdraw');
+        const confirmSend = document.getElementById('confirmSend');
+        const confirmAdd = document.getElementById('confirmAdd');
+        const confirmWithdraw = document.getElementById('confirmWithdraw');
+        const balanceAmount = document.querySelector('.balance-amount');
+
+        // Cargar transacciones
+        function loadTransactions() {
+            transactionsList.innerHTML = '';
+            
+            transactions.forEach(transaction => {
+                const transactionElement = document.createElement('div');
+                transactionElement.className = 'transaction-item';
+                
+                const amountClass = transaction.type === 'income' ? 'income' : 'expense';
+                const amountSign = transaction.type === 'income' ? '+' : '-';
+                
+                transactionElement.innerHTML = `
+                    <div class="transaction-icon ${transaction.type}">
+                        <i class="${transaction.icon}"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-name">${transaction.name}</div>
+                        <div class="transaction-date">${transaction.date}</div>
+                    </div>
+                    <div class="transaction-amount ${amountClass}">${amountSign}$${Math.abs(transaction.amount).toFixed(2)}</div>
+                `;
+                
+                transactionsList.appendChild(transactionElement);
+            });
+        }
+
+        // Funciones para mostrar/ocultar modales
+        function showModal(modal) {
+            modal.style.display = 'flex';
+        }
+
+        function hideModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        // Formatear monto como dinero
+        function formatCurrency(amount) {
+            return '$ ' + parseFloat(amount).toFixed(2);
+        }
+
+        // Actualizar balance
+        function updateBalance(amount, isAddition = true) {
+            const currentBalance = parseFloat(balanceAmount.textContent.replace('$ ', '').replace(',', ''));
+            let newBalance;
+            
+            if (isAddition) {
+                newBalance = currentBalance + amount;
+            } else {
+                newBalance = currentBalance - amount;
+            }
+            
+            balanceAmount.textContent = formatCurrency(newBalance);
+            
+            // Efecto visual al actualizar el balance
+            balanceAmount.classList.add('pulse');
+            setTimeout(() => {
+                balanceAmount.classList.remove('pulse');
+            }, 1000);
+        }
+
+        // Event listeners para botones de acciones
+        sendMoneyBtn.addEventListener('click', () => showModal(sendMoneyModal));
+        addMoneyBtn.addEventListener('click', () => showModal(addMoneyModal));
+        withdrawBtn.addEventListener('click', () => showModal(withdrawModal));
+
+        // Event listeners para cerrar modales
+        closeSendModal.addEventListener('click', () => hideModal(sendMoneyModal));
+        closeAddModal.addEventListener('click', () => hideModal(addMoneyModal));
+        closeWithdrawModal.addEventListener('click', () => hideModal(withdrawModal));
+        cancelSend.addEventListener('click', () => hideModal(sendMoneyModal));
+        cancelAdd.addEventListener('click', () => hideModal(addMoneyModal));
+        cancelWithdraw.addEventListener('click', () => hideModal(withdrawModal));
+
+        // Event listeners para confirmar acciones
+        confirmSend.addEventListener('click', () => {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const recipient = document.getElementById('recipient').value;
+            
+            if (amount && amount > 0 && recipient) {
+                // Agregar transacción
+                const newTransaction = {
+                    id: transactions.length + 1,
+                    name: `Envío a ${recipient}`,
+                    date: "Hoy, " + new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+                    amount: -amount,
+                    type: "expense",
+                    icon: "fas fa-paper-plane"
+                };
+                
+                transactions.unshift(newTransaction);
+                loadTransactions();
+                updateBalance(amount, false);
+                
+                // Mostrar mensaje de éxito
+                alert(`¡Has enviado $${amount.toFixed(2)} a ${recipient} exitosamente!`);
+                
+                // Limpiar formulario y cerrar modal
+                document.getElementById('amount').value = '';
+                document.getElementById('recipient').value = '';
+                document.getElementById('message').value = '';
+                hideModal(sendMoneyModal);
+            } else {
+                alert('Por favor completa todos los campos correctamente.');
+            }
+        });
+
+        confirmAdd.addEventListener('click', () => {
+            const amount = parseFloat(document.getElementById('addAmount').value);
+            
+            if (amount && amount > 0) {
+                // Agregar transacción
+                const newTransaction = {
+                    id: transactions.length + 1,
+                    name: "Ingreso de dinero",
+                    date: "Hoy, " + new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+                    amount: amount,
+                    type: "income",
+                    icon: "fas fa-plus-circle"
+                };
+                
+                transactions.unshift(newTransaction);
+                loadTransactions();
+                updateBalance(amount, true);
+                
+                // Mostrar mensaje de éxito
+                alert(`¡Has ingresado $${amount.toFixed(2)} exitosamente!`);
+                
+                // Limpiar formulario y cerrar modal
+                document.getElementById('addAmount').value = '';
+                hideModal(addMoneyModal);
+            } else {
+                alert('Por favor ingresa un monto válido.');
+            }
+        });
+
+        confirmWithdraw.addEventListener('click', () => {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            
+            if (amount && amount > 0) {
+                // Agregar transacción
+                const newTransaction = {
+                    id: transactions.length + 1,
+                    name: "Retiro de dinero",
+                    date: "Hoy, " + new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+                    amount: -amount,
+                    type: "expense",
+                    icon: "fas fa-money-bill-wave"
+                };
+                
+                transactions.unshift(newTransaction);
+                loadTransactions();
+                updateBalance(amount, false);
+                
+                // Mostrar mensaje de éxito
+                alert(`¡Has retirado $${amount.toFixed(2)} exitosamente!`);
+                
+                // Limpiar formulario y cerrar modal
+                document.getElementById('withdrawAmount').value = '';
+                hideModal(withdrawModal);
+            } else {
+                alert('Por favor ingresa un monto válido.');
+            }
+        });
+
+        // Cerrar modal haciendo clic fuera del contenido
+        window.addEventListener('click', (event) => {
+            if (event.target === sendMoneyModal) hideModal(sendMoneyModal);
+            if (event.target === addMoneyModal) hideModal(addMoneyModal);
+            if (event.target === withdrawModal) hideModal(withdrawModal);
+        });
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTransactions();
+            
+            // Simular notificación
+            setTimeout(() => {
+                alert("¡Bienvenido a BancoMóvil! Tu aplicación bancaria super funcional.");
+            }, 500);
+        });
+    </script>
+</body>
+</html>
